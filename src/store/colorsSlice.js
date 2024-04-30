@@ -9,7 +9,7 @@ export const colorsSlice = createSlice({
     initialState,
     reducers: {
         deleteColor: (state, { payload }) => {
-            state.state = state.state.filter(paletteColor => paletteColor !== payload)
+            state.state = state.state.filter((_, index) => index !== payload)
         },
         addColor: (state, { payload }) => {
             const duplicate = state.state.find(color => color === payload)
@@ -21,9 +21,12 @@ export const colorsSlice = createSlice({
             const { index, color } = payload
             state.state[index] = color
         },
+        selectColor: (state, { payload }) => {
+            state.selectedColorIndex = payload
+        },
     }
 })
 
-export const { deleteColor, addColor, updateColor } = colorsSlice.actions
+export const { deleteColor, addColor, updateColor, selectColor } = colorsSlice.actions
 
 export default colorsSlice.reducer

@@ -1,50 +1,46 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { updateColor, addColor, deleteColor } from '../store/colorsSlice'
+import { updateColor, addColor, deleteColor, selectColor } from '../store/colorsSlice'
 
 
 function PaletteColors() {
     const colors = useSelector((state) => state.colors.state)
+    const selectedColorIndex = useSelector((state) => state.colors.selectedColorIndex)
     const dispatch = useDispatch()
-    const [editingColorIndex, setEditingColorIndex] = useState(null);
     const [showDeleteButton, setShowDeleteButton] = useState(false);
 
-    const deleteColorFromPalette = (index) => {
+    const deleteColorFromPalette = (e, index) => {
+        e.stopPropagation();
+        dispatch(selectColor(null))
         dispatch(deleteColor(index));
-        setEditingColorIndex(null)
     };
-
-    const handleColorClick = (index) => {
-        setEditingColorIndex(index);
-    };
-
-    const handleCloseColorPicker = () => {
-        setEditingColorIndex(null);
-    };
-
     return (
-        <div className='palette' >
+        <div className='palette'>
             {colors.length > 0 && colors.map((color, index) => (
                 <div
                     key={index}
                     className="color"
                     style={{ backgroundColor: color }}
-                    onClick={() => handleColorClick(index, color)}
+                    onClick={() => dispatch(selectColor(index))}
                     onMouseEnter={() => setShowDeleteButton(index)}
                     onMouseLeave={() => setShowDeleteButton(null)}
                 >
-                    {editingColorIndex === index && (
+                    {selectedColorIndex === index && (
                         <input
                             type="color"
                             value={color}
                             onChange={(e) => dispatch(updateColor({ index, color: e.target.value }))}
-                            onBlur={handleCloseColorPicker}
+                            onBlur={() => dispatch(selectColor(null))}
                         />
                     )}
-                    {showDeleteButton === index && <button
-                        onClick={() => deleteColorFromPalette(color)}
-                        className='deleteColorButton'
-                    >X</button>}
+                    {showDeleteButton === index &&
+                        <div className='buttonContainer'>
+                            <button
+                                onClick={e => deleteColorFromPalette(e, index)}
+                                className='deleteColorButton'
+                            >X</button>
+                        </div>
+                    }
                 </div>
             ))}
         </div>

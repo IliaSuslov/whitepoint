@@ -38,10 +38,12 @@ button {
   border: none;
   border-radius: 8px;
 }
-.deleteColorButton {
+.buttonContainer {
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: -2px;
+  right: -1px;
+}
+.deleteColorButton {
   background-color: dimgray;
   border: none;
   color: white;
